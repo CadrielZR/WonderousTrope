@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Wonderous Trope</title>
     <link rel="stylesheet" href="{{url_for('static', filename='bootstrap.css')}}">
-    <link rel="stylesheet" href="{{url_for('static', filename='theme.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='bootstrap-theme.css.css')}}">
     <link rel="stylesheet" href="{{url_for('static', filename='ie10-viewport-bug-workaround.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='theme.css')}}">
 </head>
 <body>
     <div class="container">
@@ -20,6 +21,8 @@
                 </ul>
             {% endif %}
         {% endwith %}
+          <a class="btn btn-info" href="{{url_for('login')}}">Login</a>
+          <a class="btn btn-info" href="{{url_for('logout')}}">Logout</a>
           <h1>{{ titulo }}</h1>
       </div>
 

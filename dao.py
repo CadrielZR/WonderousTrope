@@ -6,6 +6,9 @@ SQL_ATUALIZA_USUARIOS = 'UPDATE usuarios SET id=%s, nome=%s, senha=%s where id=%
 SQL_BUSCA_USUARIOS_POR_ID = 'SELECT id, nome, senha from usuarios where id = %s'
 SQL_DELETA_USUARIOS = 'delete from usuarios where id = %s'
 
+#CRUD Writing Prompts
+
+
 #classes
 class UsuarioDao():
     def __init__(self, db):
