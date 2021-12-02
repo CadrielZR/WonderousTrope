@@ -1,0 +1,12 @@
+{% extends "template.html" %}
+{% block conteudo %}
+<form action="/encomendar" method="post">
+          <div class="form-group">
+            <label for="genero"></label>
+            <input type="text" id="genero" name="genero" class="form-control">
+          </div>
+          <button type="submit" class="btn btn-primary btn-salvar">Generate</button>
+          <a class="btn btn-danger" href="{{url_for('index')}}">Back</a>
+        </fieldset>
+      </form>
+{% endblock %}
