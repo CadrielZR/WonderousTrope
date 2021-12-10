@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, session, flash
 from flask_mysqldb import MySQL
 from models import Users, Writing
-from dao import UsuarioDao, WritingPromptDao, GeneroDao
+from dao import UsuarioDao, WritingPromptDao, GeneroDao, DrawingPromptDao
 import random as random
 
 app = Flask(__name__)
@@ -17,7 +17,7 @@ db = MySQL(app)
 usuario_dao = UsuarioDao(db)
 writing_dao = WritingPromptDao(db)
 genero_dao = GeneroDao(db)
-
+drawing_dao = DrawingPromptDao(db)
 
 #Writing tropes
 @app.route('/writingprompts', methods=['POST',])
@@ -38,7 +38,16 @@ def writing_prompts():
 #Drawing Prompts
 @app.route('/drawingprompts', methods=['POST',])
 def drawing_prompts():
-    id = request.form['genero']
+    aux = []
+    aux.clear()
+    i=0
+    while i<=2:
+        prompt_id = random.choice(range(1,100))
+        did = str(prompt_id)
+        dados = drawing_dao.busca_por_id(did)
+        aux.append(dados)
+        i+=1
+    return render_template('drawing_prompts.html', titulo='Wonderous Trope', prompts=aux)
 
 #página inicial e debuging
 @app.route('/')
