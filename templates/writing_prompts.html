@@ -1,12 +1,21 @@
 {% extends "template.html" %}
 {% block conteudo %}
-<form action="/encomendar" method="post">
-          <div class="form-group">
-            <label for="genero"></label>
-            <input type="text" id="genero" name="genero" class="form-control">
-          </div>
-          <button type="submit" class="btn btn-primary btn-salvar">Generate</button>
-          <a class="btn btn-danger" href="{{url_for('index')}}">Back</a>
-        </fieldset>
-      </form>
+<table class="table table-striped table-responsive table-bordered">
+            <thead class="thead-default">
+                <tr>
+                    <th>ID</th>
+                    <th>Prompt</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for prompt in prompts %}
+                <tr>
+                    <td>{{prompt._id}}</td>
+                    <td>{{prompt._prompts}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+<a class="btn btn-danger" href="{{url_for('index')}}">Voltar</a>
 {% endblock %}

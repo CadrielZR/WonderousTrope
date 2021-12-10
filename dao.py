@@ -1,5 +1,4 @@
-from random import choice
-from models import Users, Writing,Generos
+from models import Users, Writing, Generos, Drawing
 
 #CRUD Usuarios
 SQL_CRIA_USUARIOS = 'INSERT into usuario(id, nome, senha) values (%s,%s,%s)'
@@ -15,6 +14,10 @@ SQL_BUSCA_WRITING_PROMPTS_POR_ID = 'SELECT id, prompts from writing where id=%s'
 #CRUD Generos
 SQL_BUSCA_GENEROS_POR_ID = 'SELECT id, nome from generos where id=%s'
 SQL_BUSCA_GENEROS_POR_ID_LISTA = 'SELECT id, nome from generos'
+
+#CRUD Drawing Prompts
+SQL_ATUALIZA_DRAWING_PROMPTS = 'UPDATE drawing SET id=%s, prompts=%s where id=%s'
+SQL_BUSCA_DRAWING_PROMPTS_POR_ID = 'SELECT id, prompts from drawing where id=%s'
 
 
 #classes
@@ -47,20 +50,13 @@ class WritingPromptDao():
     def busca_por_id(self,id):
         cursor = self.__db.connection.cursor()
         cursor.execute(SQL_BUSCA_WRITING_PROMPTS_POR_ID,(id,))
-        prompt = traduz_writing(cursor.fetchone())
-        return prompt
-
-
-    #def listar(self) :
-       # cursor = self.__db.connection.cursor()
-        #cursor.execute(SQL_BUSCA_WRITING_PROMPTS_POR_ID)
-       # wprompts = traduz_writing(cursor.fetchall())
-       # return wprompts
+        tupla = cursor.fetchone()
+        return Writing(tupla[0], tupla[1])
 
 def traduz_writing(prompt):
-    def cria_prompt_com_tupla (tupla):
-        return Writing(tupla[0], tupla[1])
-    return list(map(cria_prompt_com_tupla,prompt))
+    def cria_prompt_tupla(tupla):
+        return Writing(str(tupla[0]), tupla[1])
+    return list(map(cria_prompt_tupla,prompt))
 
 #Genero
 class GeneroDao():
@@ -79,6 +75,17 @@ class GeneroDao():
         cursor.execute(SQL_BUSCA_GENEROS_POR_ID_LISTA)
         genero = traduz_genero_lista(cursor.fetchall())
         return genero
+
+#Drawing Prompts:
+class DrawingPromptDao():
+    def __init__(self,db):
+        self.__db=db
+
+    def busca_por_id(self,id):
+        cursor = self.__db.connection.cursor()
+        cursor.execute(SQL_BUSCA_DRAWING_PROMPTS_POR_ID,(id,))
+        tupla = cursor.fetchone()
+        return Drawing(tupla[0], tupla[1])
 
 
 

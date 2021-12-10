@@ -4,21 +4,24 @@
 <thead>
     <h2> What Should I Write ?</h2>
 </thead>
-<thead class="form-group">
-    <label for="genero">Genero</label>
-    <select class="form-select" id="genero" name="genero">
-            {% for g in genero%}
-                <option value="{{g._id}}">{{g._nome}}</option>
-            {% endfor %}
-    </select>
-</thead>
-<a class="btn btn-lg btn-primary" href="{{url_for('writing_prompts')}}"> Generate</a>
+<form action="/writingprompts" method="post">
+    <thead class="form-group">
+        <label for="genero">Genero</label>
+        <select class="form-select" id="genero" name="genero">
+                {% for g in genero%}
+                    <option value="{{g._id}}">{{g._nome}}</option>
+                {% endfor %}
+        </select>
+    </thead>
+<button type="submit" class="btn btn-lg btn-primary">Generate</button>
+</form>
 
 
 <thead class="thead-default">
     <h2> What Should I Draw ?</h2>
 </thead>
-
-<a class="btn btn-lg btn-primary" href="{{url_for('writing_prompts')}}"> Generate</a>
+<form action="/drawingprompts" method="post">
+    <button type="submit" class="btn btn-lg btn-primary">Generate</button>
+</form>
 
 {% endblock %}
