@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, session, flash
 from flask_mysqldb import MySQL
-from models import Users, Writing
-from dao import UsuarioDao, WritingPromptDao, GeneroDao, DrawingPromptDao
+from models import Users, Writing, Writing_fav
+from dao import UsuarioDao, WritingPromptDao, GeneroDao, DrawingPromptDao, WritingFavDao, DrawingFavDao
 import random as random
 
 app = Flask(__name__)
@@ -18,10 +18,14 @@ usuario_dao = UsuarioDao(db)
 writing_dao = WritingPromptDao(db)
 genero_dao = GeneroDao(db)
 drawing_dao = DrawingPromptDao(db)
+writing_fav_dao = WritingFavDao(db)
+drawing_fav_dao = DrawingFavDao(db)
 
 #Writing tropes
 @app.route('/writingprompts', methods=['POST',])
 def writing_prompts():
+    if 'usuario_logado' not in session or session['usuario_logado'] == None :
+        return redirect('/login?proxima=writing_prompts')
     id = request.form['genero']
     id_gen = int(id)
     aux = []
@@ -35,9 +39,13 @@ def writing_prompts():
         i+=1
     return render_template('writing_prompts.html', titulo='Wonderous Trope', prompts=aux)
 
+
+
 #Drawing Prompts
 @app.route('/drawingprompts', methods=['POST',])
 def drawing_prompts():
+    if 'usuario_logado' not in session or session['usuario_logado'] == None :
+        return redirect('/login?proxima=drawing_prompts')
     aux = []
     aux.clear()
     i=0
@@ -49,7 +57,40 @@ def drawing_prompts():
         i+=1
     return render_template('drawing_prompts.html', titulo='Wonderous Trope', prompts=aux)
 
+#Favorite Prompts
+@app.route('/savewritingfav/<int:id>')
+def save_writing_fav(id):
+    copy_prompt_id = writing_dao.busca_por_id(id)
+    writing_fav_dao.salvar(copy_prompt_id)
+
+    return redirect('/')
+
+@app.route('/savedrawingfav/<int:id>')
+def save_drawing_fav(id):
+    copy_prompt_id = drawing_dao.busca_por_id(id)
+    drawing_fav_dao.salvar(copy_prompt_id)
+
+    return redirect('/')
+
+@app.route('/favoriteprompts')
+def favorite_prompts():
+    lista_w = writing_fav_dao.listar()
+    lista_d = drawing_fav_dao.listar()
+
+    return render_template('favorite_prompts.html', wprompts=lista_w, dprompts = lista_d)
+
+@app.route('/deletewritingfav/<int:id>')
+def delete_writing_fav(id):
+    writing_fav_dao.deletar(id)
+    return redirect('/')
+
+@app.route('/deletedrawingfav/<int:id>')
+def delete_drawing_fav(id):
+    drawing_fav_dao.deletar(id)
+    return redirect('/')
+
 #página inicial e debuging
+
 @app.route('/')
 def index():
     if 'usuario_logado' not in session or session['usuario_logado'] == None :
@@ -70,19 +111,38 @@ def autenticar():
     if usuario:
         if usuario._senha == request.form['senha']:
             session['usuario_logado'] = request.form['usuario']
-            flash(request.form['usuario'] + ' logou com sucesso!')
+            flash(request.form['usuario'] + ' sucessfully logged in!')
             proxima_pagina = request.form['proxima']
             if proxima_pagina == '':
                return redirect('/')
             else:
                 return redirect('/{}'.format(proxima_pagina))
-    flash('Não foi possivel logar, tente novamente!')
+    flash('An error has ocurred, please try again!')
     return redirect('/login')
 
 @app.route('/logout')
 def logout():
     session['usuario_logado'] = None
-    flash('Nenhum usuário logado!')
+    flash('No user logged in!')
+    return redirect('/login')
+
+@app.route('/signup')
+def signup():
+    if 'usuario_logado' not in session or session['usuario_logado'] == None :
+        return render_template('signup.html', titulo = 'New Account')
+    else:
+        flash('You are already loged in!')
+        return redirect('/')
+
+@app.route('/novaconta', methods=['POST',])
+def novaconta():
+    id = request.form['username']
+    nome = request.form['nome']
+    senha = request.form['senha']
+
+    user = Users(id, nome, senha)
+    usuario_dao.salvar(user)
+
     return redirect('/login')
 
 #switch geral

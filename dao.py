@@ -1,4 +1,4 @@
-from models import Users, Writing, Generos, Drawing
+from models import Users, Writing, Generos, Drawing, Writing_fav, Drawing_fav
 
 #CRUD Usuarios
 SQL_CRIA_USUARIOS = 'INSERT into usuario(id, nome, senha) values (%s,%s,%s)'
@@ -18,6 +18,20 @@ SQL_BUSCA_GENEROS_POR_ID_LISTA = 'SELECT id, nome from generos'
 #CRUD Drawing Prompts
 SQL_ATUALIZA_DRAWING_PROMPTS = 'UPDATE drawing SET id=%s, prompts=%s where id=%s'
 SQL_BUSCA_DRAWING_PROMPTS_POR_ID = 'SELECT id, prompts from drawing where id=%s'
+
+#CRUD Writing favorites
+SQL_CRIA_WRITING_FAV = 'INSERT into writing_fav(id, prompts) values (%s,%s)'
+SQL_ATUALIZA_WRITING_FAV = 'UPDATE writing_fav SET id=%s, prompts=%s where id=%s'
+SQL_BUSCA_WRITING_FAV_POR_ID = 'SELECT id, prompts from writing_fav where id = %s'
+SQL_BUSCA_WRITING_FAV_POR_ID_LISTA = 'SELECT id, prompts from writing_fav'
+SQL_DELETA_WRITING_FAV = 'delete from writing_fav where id = %s'
+
+#CRUD Drawing Favorites
+SQL_CRIA_DRAWING_FAV = 'INSERT into drawing_fav(id, prompts) values (%s,%s)'
+SQL_ATUALIZA_DRAWING_FAV = 'UPDATE drawing_fav SET id=%s, prompts=%s where id=%s'
+SQL_BUSCA_DRAWING_FAV_POR_ID = 'SELECT id, prompts from drawing_fav where id = %s'
+SQL_BUSCA_DRAWING_FAV_POR_ID_LISTA = 'SELECT id, prompts from drawing_fav'
+SQL_DELETA_DRAWING_FAV = 'delete from drawing_fav where id = %s'
 
 
 #classes
@@ -87,7 +101,70 @@ class DrawingPromptDao():
         tupla = cursor.fetchone()
         return Drawing(tupla[0], tupla[1])
 
+class WritingFavDao():
+    def __init__(self, db):
+        self.__db=db
 
+    def salvar(self, prompt):
+        cursor =self.__db.connection.cursor()
+        cursor.execute(SQL_CRIA_WRITING_FAV, (prompt._id, prompt._prompts))
+
+        self.__db.connection.commit()
+        return prompt
+
+    def listar(self):
+        cursor = self.__db.connection.cursor()
+        cursor.execute(SQL_BUSCA_WRITING_FAV_POR_ID_LISTA)
+        prompts = traduz_writing_fav(cursor.fetchall())
+        return prompts
+
+    def busca_por_id(self, id):
+        cursor = self.__db.connection.cursor()
+        cursor.execute(SQL_BUSCA_WRITING_FAV_POR_ID, (id,))
+        tupla = cursor.fetchone()
+        return Writing_fav(tupla[0],tupla[1])
+
+    def deletar(self, id):
+        self.__db.connection.cursor().execute(SQL_DELETA_WRITING_FAV, (id,))
+        self.__db.connection.commit()
+
+class DrawingFavDao():
+    def __init__(self, db):
+        self.__db=db
+
+    def salvar(self, prompt):
+        cursor =self.__db.connection.cursor()
+        cursor.execute(SQL_CRIA_DRAWING_FAV, (prompt._id, prompt._prompts))
+
+        self.__db.connection.commit()
+        return prompt
+
+    def listar(self):
+        cursor = self.__db.connection.cursor()
+        cursor.execute(SQL_BUSCA_DRAWING_FAV_POR_ID_LISTA)
+        prompts = traduz_drawing_fav(cursor.fetchall())
+        return prompts
+
+    def busca_por_id(self, id):
+        cursor = self.__db.connection.cursor()
+        cursor.execute(SQL_BUSCA_DRAWING_FAV_POR_ID, (id,))
+        tupla = cursor.fetchone()
+        return Writing_fav(tupla[0],tupla[1])
+
+    def deletar(self, id):
+        self.__db.connection.cursor().execute(SQL_DELETA_DRAWING_FAV, (id,))
+        self.__db.connection.commit()
+
+
+def traduz_writing_fav(prompt):
+    def cria_prompt_tupla(tupla):
+        return Writing_fav(tupla[0], tupla[1])
+    return list(map(cria_prompt_tupla,prompt))
+
+def traduz_drawing_fav(prompt):
+    def cria_prompt_tupla(tupla):
+        return Drawing_fav(tupla[0], tupla[1])
+    return list(map(cria_prompt_tupla,prompt))
 
 def traduz_genero(tupla):
     return Generos(tupla[0], tupla[1])

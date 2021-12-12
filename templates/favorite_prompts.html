@@ -1,0 +1,46 @@
+{% extends "template.html" %}
+{% block conteudo %}
+<thead class="thead-default">Here are your favorite writing themes!</thead>
+<th></th>
+<table class="table table-striped table-responsive table-bordered">
+            <thead class="thead-default">
+                <tr>
+                    <th>ID</th>
+                    <th>Prompt</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for prompt in wprompts %}
+                <tr>
+                    <td>{{prompt._id}}</td>
+                        <td>{{prompt._prompts}}</td>
+                        <td><a class="btn btn-info" href="{{url_for('delete_writing_fav', id=prompt._id)}}">Remove from Favorites</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+
+    <th></th>
+<thead class="thead-default">Here are your favorite drawing prompts!</thead>
+    <th></th>
+<table class="table table-striped table-responsive table-bordered">
+    <thead class="thead-default">
+                <tr>
+                    <th>ID</th>
+                    <th>Prompt</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for prompt in dprompts %}
+                <tr>
+                    <td>{{prompt._id}}</td>
+                        <td>{{prompt._prompts}}</td>
+                        <td><a class="btn btn-info" href="{{url_for('delete_drawing_fav', id=prompt._id)}}">Remove from Favorites</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+</table>
+<a class="btn btn-danger" href="{{url_for('index')}}">Back</a>
+
+{% endblock %}

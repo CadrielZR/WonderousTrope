@@ -14,10 +14,11 @@
             {% for prompt in prompts %}
                 <tr>
                     <td>{{prompt._id}}</td>
-                    <td>{{prompt._prompts}}</td>
+                        <td>{{prompt._prompts}}</td>
+                    <td><a class="btn btn-info" href="{{url_for('save_writing_fav', id=prompt._id)}}">Save as Favorites</a></td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
-<a class="btn btn-danger" href="{{url_for('index')}}">Voltar</a>
+<a class="btn btn-danger" href="{{url_for('index')}}">Back</a>
 {% endblock %}
