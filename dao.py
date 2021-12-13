@@ -40,6 +40,13 @@ class UsuarioDao():
     def __init__(self, db):
         self.__db =db
 
+    def salvar(self, user):
+        cursor =self.__db.connection.cursor()
+        cursor.execute(SQL_CRIA_USUARIOS, (user._id, user._nome,user._senha))
+
+        self.__db.connection.commit()
+        return user
+
     def busca_por_id(self, id):
         cursor = self.__db.connection.cursor()
         cursor.execute(SQL_BUSCA_USUARIOS_POR_ID, (id,))
